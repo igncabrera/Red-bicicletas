@@ -14,6 +14,23 @@ Bike.add = function (aBike){
     Bike.allBikes.push(aBike);
 }
 
+Bike.findById = function(aBikeId){
+    var aBike = Bike.allBikes.find(x => x.id == aBikeId)
+    if(aBike)
+      return aBike
+    else
+     throw new Error(`No existe una bicicleta con el id ${aBikeId}`)
+}
+
+Bike.removeById = function(aBikeId){
+    for(var i=0; i < Bike.allBikes.length;i++){
+        if(Bike.allBikes[i].id == aBikeId){
+            Bike.allBikes.splice(i, 1);
+            break;
+        }
+    }
+}
+
 var a = new Bike(1,'red','urban',[-34.6012424,-58.38614197]);
 var b = new Bike(2,'white','urban',[-34.596932,-58.3808287]);
 
