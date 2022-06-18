@@ -1,4 +1,4 @@
-var Bike = require('../models/Bike');
+var Bike = require('../models/bike');
 
 exports.bike_list = function(req,res){
     res.render('bikes/index',{bikes: Bike.allBikes});
