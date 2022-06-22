@@ -55,7 +55,7 @@ describe("Bike API", () => {
                 body: aBike
             }, function (error, response, body){
                 expect(response.statusCode).toBe(200);
-                var bike = JSON.parse(aBike);
+                var bike = JSON.parse(body);
                 console.log(bike);
                 expect(bike.bikes.code).toBe(1)
                 expect(bike.bikes.color).toBe("red");
