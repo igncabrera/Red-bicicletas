@@ -7,7 +7,7 @@ var base_url = "http://127.0.0.1:27017/api/bikes";
 describe("Bike API", () => {
     beforeEach(function (done) {
         var mongoDB = 'mongodb://127.0.0.1/red_bicicletas';
-        mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+        mongoose.connect(mongoDB);
 
         const db = mongoose.connection;
         db.on('error', console.error.bind(console, 'connection error'));
@@ -35,7 +35,7 @@ describe("Bike API", () => {
                 if (err) console.log(err);
             });
 
-            request.get('http://localhost:27017/api/bikes', (error, response, body) => {
+            request.get('http://localhost/api/bikes', (error, response, body) => {
                 expect(response.statusCode).toBe(200);
                 done();
             });
@@ -51,7 +51,7 @@ describe("Bike API", () => {
 
             request.post({
                 headers: headers,
-                url: 'http://localhost:27017/api/bikes/create',
+                url: 'http://localhost/api/bikes/create',
                 body: aBike
             }, function (error, response, body){
                 expect(response.statusCode).toBe(200);
