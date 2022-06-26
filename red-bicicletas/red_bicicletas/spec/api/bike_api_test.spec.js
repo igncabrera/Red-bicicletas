@@ -1,30 +1,66 @@
+var mongoose = require('mongoose')
 var Bike = require('../../models/bike');
 var request = require('request');
-var server = require('../../bin/www')
 
-describe('Bike API', () => {
+var base_url = "http://127.0.0.1:27017/api/bikes";
+
+describe("Bike API", () => {
+    beforeEach(function (done) {
+        var mongoDB = 'mongodb://127.0.0.1/red_bicicletas';
+        mongoose.connect(mongoDB);
+
+        const db = mongoose.connection;
+        db.on('error', console.error.bind(console, 'connection error'));
+        db.once('open', function () {
+            console.log('We are connected to test database');
+            done();
+        });
+    });
+
+
+    afterEach(function (done) {
+        Bike.deleteMany({}, function (err, success) {
+            if (err) console.log(err);
+            mongoose.disconnect(err);
+            done();
+        });
+    });
+
     describe('GET BIKES /', () => {
-        it('Status 200', () => {
-            expect(Bike.allBikes.length).toBe(0);
-            var a = new Bike(1,'black', 'urban', [-34.6012424,-58.3864197]);
-            Bike.add(a)
+        it('Status 200', (done) => {
 
-            request.get('http://localhost:27017/api/bikes',function(error,response,body){
-                expect(response.statusCode).toBe(200)
+
+            var aBike = new Bike({ code: 1, color: "green", model: "urban" });
+            Bike.add(aBike, (err, newBike) => {
+                if (err) console.log(err);
+            });
+
+            request.get('http://localhost/api/bikes', (error, response, body) => {
+                expect(response.statusCode).toBe(200);
+                done();
             });
         });
     });
-    describe('POST BIKES /create', () =>{
-        it('STATUS 200', (done) =>{
-            var headers = {'content-type' : 'application/json'};
-            var aBike = '{"id": 10, "color": "red", "model" : "urban", "lat": -34, "lng": -54 }';
+
+    describe('POST BIKES /create', () => {
+        it('Status 200', (done) => {
+
+            var headers = { 'content-type': 'application/json' };
+
+            var aBike = '{"code":1, "color":"red", "model":"urban", "lat": -34, "lng": -54}';
+
             request.post({
                 headers: headers,
-                url: 'http://localhost:27017/api/bikes/create',
+                url: 'http://localhost/api/bikes/create',
                 body: aBike
-            },function(error,response,body){
+            }, function (error, response, body){
                 expect(response.statusCode).toBe(200);
-                expect(Bike.findById(10).color).toBe("red");
+                var bike = JSON.parse(body);
+                console.log(bike);
+                expect(bike.bikes.code).toBe(1)
+                expect(bike.bikes.color).toBe("red");
+                expect(bike.bikes.location[0]).toBe(-34);
+                expect(bike.bikes.location[1]).toBe(-54);
                 done();
             });
         });

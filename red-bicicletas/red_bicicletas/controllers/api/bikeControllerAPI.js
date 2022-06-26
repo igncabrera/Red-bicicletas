@@ -7,8 +7,12 @@ exports.bike_list = function(req,res){
 }
 
 exports.bike_create = function(req,res){
-    var bike= new Bike(req.body.id, req.body.color, req.body.model, req.body.location);
+    const bike = new Bike();
+    bike.code = req.body.code
+    bike.color = req.body.color 
+    bike.model = req.body.model
     bike.location = [req.body.lat, req.body.lng];
+    
 
     Bike.add(bike);
 
