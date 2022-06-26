@@ -1,15 +1,14 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-
 var bikeSchema = new Schema({
-    code: Number,
+    code : Number,
     color: String,
-    model: String,
+    model:  String,
     location: {
         type: [Number], index: {type: '2dsphere', sparse: true}     
-    },
-});
+    }
+})
 
 bikeSchema.statics.createInstance = function(code,color,model,location){
     return new this({
@@ -17,28 +16,16 @@ bikeSchema.statics.createInstance = function(code,color,model,location){
         color: color,
         model: model,
         location: location
-    });
-};
+    })
+}
 
 bikeSchema.methods.toString = function(){
-    return 'code: ' + this.code + '|color: ' + this.color
-};
+    return 'code :' + this.code + '|color: ' + this.color
+}
 
 bikeSchema.statics.allBikes = function(cb){
     return this.find({}, cb)
-};
-
-bikeSchema.statics.add = function(aBike, cb){
-    this.create(aBike, cb)
-};
-
-bikeSchema.statics.findByCode = function(aCode, cb){
-    return this.findOne({code: aCode}, cb);
-};
-
-bikeSchema.statics.removeByCode = function(aCode, cb){
-    return this.deleteOne({code: aCode}, cb);
-};
+}
 
 module.exports = mongoose.model('Bike', bikeSchema);
 
@@ -87,6 +74,7 @@ Bike.add(a);
 Bike.add(b);
 
 
+
+module.exports = Bike;
+
 */
-
-
