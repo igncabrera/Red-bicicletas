@@ -1,7 +1,7 @@
-
+extends ../layout
 
 block content
-  a.btn.btn-success(href='/users/create') Nuevo Usuario 
+  a.btn.btn-success(href='/users/new') Nuevo Usuario 
 
   br
   br
@@ -17,17 +17,17 @@ block content
         th(scope='col') Verificado
         th(scope='col')
         th(scope='col') 
-  tbody 
-    each user in users
-      tr 
-        td(scope='row')
-          = user.id
-        td= user.name
-        td= user.email 
-        td= user.verified ? 'SI' : 'NO'
-        td
-          a.btn(href='users/' + user.id + '/update') Editar 
-        td
+    tbody 
+      each user in users
+       tr 
+         td(scope='row')
+           = user.id
+         td= user.name
+         td= user.email 
+         td= user.verified ? 'SI' : 'NO'
+         td
+           a.btn(href='users/' + user.id + '/edit') Editar 
+         td
           form.inline(method='post' action='users/' + user.id + '/delete')
             input(type='hidden' name='id' value= user.id)
             button.link-button.btn-danger(type='submit' name='submit_param' value='submit_value' class='btn')

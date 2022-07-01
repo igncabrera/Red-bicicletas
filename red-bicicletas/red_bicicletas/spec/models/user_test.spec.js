@@ -32,8 +32,9 @@ describe('Testing Users', function(){
 
     describe('User books a bike',() =>{
         it('it must exist a booking',(done) =>{
-            const user = new User({name: 'Ezequiel'});
+            const user = new User({name: 'ezequiel', password: '123456789', email: 'cmen@gmail.com'});
             user.save();
+            console.log(user)
             const bike = new Bike({color: 'green', model: "urban"}); //el parametro code da error de cualquier forma que sea puesto, asi que tuve que quitarlo, si alguien sabe arreglarlo, agradeceria la ayuda, gracias
             bike.save();
             
@@ -41,7 +42,7 @@ describe('Testing Users', function(){
             var tomorrow = new Date();
             tomorrow.setDate(today.getDate()+1);
             user.booking(bike.id, today, tomorrow, function(err,book){
-                Booking.find({}).populate('bike').populate('user').exec(function(err,bookings){
+                Booking.find({}).populate('user').populate('bike').exec(function(err,bookings){
                     console.log(bookings[0])
                     expect(bookings.length).toBe(1);
                     expect(bookings[0].bookingDays()).toBe(2);

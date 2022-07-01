@@ -1,53 +1,61 @@
 var User = require('../models/user');
 
-module.exports = {
-    list: function(req, res, next){
-        User.find({}, (err,users) => {
-            res.render('users/index', {users: users});
-        });
-    },
-    update_get: function(req,res,next){
-        User.findById(req.params.id, function(err, user){
-            res.render('users/update', {errors: {}, user: user});
-        });
-    },
-    update: function(req,res,next){
-        var update_values = {name: req.body.name};
-        User.findByIdAndUpdate(req,params.id, update_values, function(err,user){
-            if(err){
-                console.log(err)
-                res.render('users/update',{errors: err.errors, user: new User({name: req.body.name, email: req.body.email})});
-            }else{
-                res.redirect('users');
-                return
-            }
-        })
-    }, 
-    create_get: function(req,res,next){
-        res.render('users/create', {errors: {}, user: new User()})
-    },
-    create: function(req,res,next){
-        if(req.body.password != req.body.confirm_password){
-            res.render('users/create', {errors: {confirm_password: {message: 'password is not the same'}},users: new User({name: req.body.name, email: req.body.email})});
-            return
-        }
-        User.create({name: req.body.name, email: req.body.email, password: req.body.password}, function(err, newUser){
-            if(err){
-                res.render('users/create', {errors: err.errors, user: new User({name: req.body.name, email: req.body.email})});
-            }else{
-                newUser.send_welcome_email();
-                res.redirect('/');
-            }
-        })
-    }, 
-    delete: function(req,res,next){
-        User.findByIdAndDelete(req.body.id, function(err){
-            if(err){
-                next(err);
-            }else{
-                res.redirect('/users');
-            }
-        })
-    }
+exports.listUsers = (req, res) => {
+  User.allUsers((_err, users) => {
+    res.render('users/index', { users });
+  });
 };
 
+exports.newUser = (req, res) => {
+  res.render('users/new', { errors: {}, user: {} });
+};
+
+exports.createUser = ({ body }, res) => {
+  const { name, email, password } = body;
+  const newUser = new User({
+    name,
+    email,
+    password,
+    userContext: { verified: false },
+  });
+  User.add(newUser, (err) => {
+    if (err) res.render('users', { errors: err.errors, user: newUser });
+    else {
+      newUser.sendWelcomeEmail();
+      res.redirect('/users');
+    }
+  });
+};
+
+
+exports.editUser = function(req,res,next){
+    User.findById(req.params.id, function(err, user){
+        res.render('users/edit', {errors: {}, user: user});
+    });
+},
+
+
+
+exports.updateUser = function(req,res,next){
+    var update_values = {name: req.body.name};
+    console.log(update_values)
+    User.findByIdAndUpdate(req.params.id, update_values, function(err,user){
+        if(err){
+            console.log(err)
+            res.render('users/update',{errors: err.errors, user: new User({name: req.body.name, email: req.body.email})});
+        }else{
+            res.redirect('/users');
+            return
+        }
+    })
+}
+
+exports.deleteUser = function(req,res,next){
+    User.findByIdAndDelete(req.body.id, function(err){
+        if(err){
+            next(err);
+        }else{
+            res.redirect('/users');
+        }
+    })
+}
